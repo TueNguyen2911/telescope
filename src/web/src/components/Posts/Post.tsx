@@ -15,13 +15,15 @@ import {
   Chip,
 } from '@material-ui/core';
 import ErrorRoundedIcon from '@material-ui/icons/ErrorRounded';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { Post } from '../../interfaces';
 import AdminButtons from '../AdminButtons';
 import Spinner from '../Spinner';
 import PostDesktopInfo from './PostInfo';
 import PostAvatar from './PostAvatar';
 import GitHubInfo from './GitHubInfo';
-import GitHubInfoMobile from './GItHubInfoMobile';
+import GitHubInfoMobile from './GitHubInfoMobile';
 import ShareButton from './ShareButton';
 
 type Props = {
@@ -177,7 +179,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down(1024)]: {
         fontSize: '1.1em',
         height: '5px',
-        margin: '-1.6em 1em -1em .5px',
+        margin: '-1.6em -.5em .5px',
       },
     },
     authorAvatarContainer: {
@@ -222,11 +224,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     accordion: {
       backgroundColor: 'inherit',
-      border: 'none',
+      borderBottom: '1.5px solid #cccccc',
       boxShadow: 'none',
       top: '0',
       zIndex: 1,
       position: 'sticky',
+    },
+    expandIcon: {
+      alignSelf: 'center',
     },
   })
 );
@@ -341,7 +346,11 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
       )}
 
       {!desktop && (
-        <Accordion className={classes.accordion}>
+        <Accordion
+          onClick={() => setExpandHeader(!expandHeader)}
+          onKeyDown={() => setExpandHeader(!expandHeader)}
+          className={classes.accordion}
+        >
           <AccordionSummary className={classes.accordionSummary}>
             <ListSubheader component="div" className={classes.postInfo}>
               <div className={classes.titleContainer}>
@@ -351,12 +360,7 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
                   id={post.id}
                   className={clsx(classes.title, expandHeader && classes.expandedTitle)}
                 >
-                  <span
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => setExpandHeader(!expandHeader)}
-                    onKeyDown={() => setExpandHeader(!expandHeader)}
-                  >
+                  <span role="button" tabIndex={0}>
                     {post.title}
                   </span>
                 </Typography>
@@ -376,10 +380,13 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
                   <a href={post.url} rel="bookmark" className={classes.link}>
                     <time dateTime={post.updated}>{`${formatPublishedDate(post.updated)}`}</time>
                   </a>
-
                   <ShareButton url={post.url} />
                 </h1>
-
+                {expandHeader ? (
+                  <ExpandLessIcon className={classes.expandIcon} />
+                ) : (
+                  <ExpandMoreIcon className={classes.expandIcon} />
+                )}
                 <div>
                   <AdminButtons />
                 </div>
