@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import useSWR from 'swr';
 import clsx from 'clsx';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
@@ -15,8 +15,6 @@ import {
   Chip,
 } from '@material-ui/core';
 import ErrorRoundedIcon from '@material-ui/icons/ErrorRounded';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { Post } from '../../interfaces';
 import AdminButtons from '../AdminButtons';
 import Spinner from '../Spinner';
@@ -25,6 +23,7 @@ import PostAvatar from './PostAvatar';
 import GitHubInfo from './GitHubInfo';
 import GitHubInfoMobile from './GitHubInfoMobile';
 import ShareButton from './ShareButton';
+import ExpandIcon from './ExpandIcon';
 
 type Props = {
   postUrl: string;
@@ -232,6 +231,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     expandIcon: {
       alignSelf: 'center',
+      borderLeft: '1px solid #cccccc',
+      paddingLeft: '5px',
+    },
+    chevron: {
+      fontSize: '5rem',
     },
   })
 );
@@ -286,6 +290,7 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
   const desktop = useMediaQuery(theme.breakpoints.up(1205));
   // We need a ref to our post content, which we inject into a <section> below.
   const sectionEl = useRef<HTMLElement>(null);
+
   // Grab the post data from our backend so we can render it
   const { data: post, error } = useSWR<Post>(postUrl);
   const [expandHeader, setExpandHeader] = useState(false);
@@ -295,6 +300,18 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
     [post?.html]
   );
 
+  useEffect(() => {
+    const onScroll = () => {
+      const bottom = sectionEl?.current?.getBoundingClientRect().bottom;
+      if (bottom && bottom < 2) {
+        setExpandHeader(false);
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    if (expandHeader) {
+      window.addEventListener('scroll', onScroll);
+    }
+  }, [expandHeader]);
   if (error) {
     console.error(`Error loading post at ${postUrl}`, error);
     return (
@@ -349,6 +366,7 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
         <Accordion
           onClick={() => setExpandHeader(!expandHeader)}
           onKeyDown={() => setExpandHeader(!expandHeader)}
+          expanded={expandHeader}
           className={classes.accordion}
         >
           <AccordionSummary className={classes.accordionSummary}>
@@ -382,11 +400,7 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
                   </a>
                   <ShareButton url={post.url} />
                 </h1>
-                {expandHeader ? (
-                  <ExpandLessIcon className={classes.expandIcon} />
-                ) : (
-                  <ExpandMoreIcon className={classes.expandIcon} />
-                )}
+                <ExpandIcon small={false} expandHeader={expandHeader} />
                 <div>
                   <AdminButtons />
                 </div>
@@ -396,6 +410,7 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
           <AccordionDetails>
             {!!extractedGitHubUrls.length && <GitHubInfoMobile ghUrls={extractedGitHubUrls} />}
           </AccordionDetails>
+          <ExpandIcon small expandHeader={expandHeader} />
         </Accordion>
       )}
 

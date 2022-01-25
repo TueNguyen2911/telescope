@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
     GitHubInfoContainer: {
       margin: '0 0 0 1rem',
     },
+    chevron: {
+      fontSize: '5rem',
+    },
   })
 );
 
