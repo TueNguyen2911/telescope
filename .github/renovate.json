@@ -1,5 +1,6 @@
 {
   "extends": ["config:base"],
+  "includePaths": "../tools/autodeployment/",
   "packageRules": [
     { "matchPackagePatterns": ["@senecacdot/satellite"], "rangeStrategy": "replace" },
     { "matchPackagePatterns": ["node-fetch"], "allowedVersions": "<3.0" }
