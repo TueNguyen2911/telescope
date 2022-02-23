@@ -39,4 +39,4 @@ jobs:
       - run: pnpm install
       - name: Pull/Build Docker Containers Necessary for Running E2E Tests
         run: docker compose --env-file ./config/env.development up -d ${{ env.DOCKER_CONTAINERS }}
-      - run: pnpm jest:e2e
+      - run: pnpm jest:e2e-all
