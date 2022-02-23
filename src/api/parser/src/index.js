@@ -96,3 +96,5 @@ feedQueue.on('failed', (job, err) =>
  */
 loadFeedsIntoQueue();
 feedWorker.start();
+
+module.exports = loadFeedsIntoQueue;
