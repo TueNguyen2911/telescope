@@ -3,10 +3,9 @@ const normalizeUrl = require('normalize-url');
 const Feed = require('../src/data/feed');
 const Post = require('../src/data/post');
 const { search } = require('../src/utils/indexer');
-const { hash } = require('@senecacdot/satellite');
+const { hash, Elastic } = require('@senecacdot/satellite');
 
 const urlToId = (url) => hash(normalizeUrl(url));
-jest.mock('../src/utils/indexer');
 
 describe('Post data class tests', () => {
   const data = {
@@ -61,6 +60,20 @@ describe('Post data class tests', () => {
     date: 'dooDate',
   };
 
+  const esMockResults = {
+    hits: {
+      total: { value: 2 },
+      hits: [{ _id: `${articleData1.id}` }, { _id: `${articleData2.id}` }],
+    },
+  };
+
+  const esMockEmpty = {
+    hits: {
+      total: { value: 0 },
+      hits: [],
+    },
+  };
+
   test('Feed should be a function', () => {
     expect(typeof Feed).toBe('function');
   });
@@ -78,7 +91,9 @@ describe('Post data class tests', () => {
   });
 
   describe('Get and Set Feed objects from database', () => {
+    const { mock } = Elastic();
     beforeAll(() => createFeed().save());
+    afterEach(() => mock.clearAll());
 
     test('Feed.byId() for a valid id should return a Feed', async () => {
       const feed = await Feed.byId(data.id);
@@ -166,6 +181,16 @@ describe('Post data class tests', () => {
       ]);
 
       const posts = await Promise.all([Post.byId(articleData1.id), Post.byId(articleData2.id)]);
+
+      mock.add(
+        {
+          method: ['POST', 'GET'],
+          path: '/posts/post/_search',
+        },
+        () => {
+          return esMockResults;
+        }
+      );
       const elasticPosts = await search();
 
       // Make sure our feed is correct and saved
@@ -183,6 +208,16 @@ describe('Post data class tests', () => {
       expect(Object.keys(elasticPosts.values[0])).toEqual(expect.arrayContaining(['id']));
       expect(Object.keys(elasticPosts.values[1])).toEqual(expect.arrayContaining(['id']));
       await feed.delete();
+      mock.clearAll();
+      mock.add(
+        {
+          method: ['POST', 'GET'],
+          path: '/posts/post/_search',
+        },
+        () => {
+          return esMockEmpty;
+        }
+      );
       const esSearchDelete = await search();
 
       // Make sure posts are removed as well
