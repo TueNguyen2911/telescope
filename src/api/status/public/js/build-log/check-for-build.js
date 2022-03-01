@@ -2,19 +2,24 @@ import checkBuildStatus from './check-build-status.js';
 import terminal from './terminal.js';
 import buildHeader from './build-header.js';
 import showToast from '../utils/toast.js';
+import { buildLogExistsInStorage } from '../utils/operations.js';
 
 let build;
+let uploaded = false; //true if the build log is uploaded to supabase storage
 
 export default async function checkForBuild() {
   const status = await checkBuildStatus();
-
+  console.log(status);
   // Prefer the current build, but fallback to the previous one
   const buildData = status.current ?? status.previous;
 
   if (build && build.sha === buildData.sha) {
     return;
   }
-
+  if (!build.current && build.previous && !uploaded) {
+    const exists = await buildLogExistsInStorage(build.sha);
+    console.log(exists);
+  }
   build = buildData;
 
   // Render the build header info

@@ -3,8 +3,8 @@ import showToast from '../utils/toast.js';
 // Get the proper URL for the autodeployment server based on how this is
 // being loaded. On staging and production, remove the `api.` subdomain.
 // On localhost:1111, use localhost (drop the port).
-const autodeploymentUrl = (path) =>
-  `//${window.location.hostname.replace(/(api\.|\.api)/, '')}/deploy${path}`;
+const autodeploymentUrl = (path) => `//dev.telescope.cdot.systems/deploy${path}`;
+// `//${window.location.hostname.replace(/(api\.|\.api)/, '')}/deploy${path}`;
 
 const getBuildLog = async (buildName) => {
   if (!(buildName === 'current' || buildName === 'previous')) {
@@ -51,7 +51,6 @@ export default async () => {
     // Decorate builds with extra properties
     decorateBuild(data.previous, () => getBuildLog('previous'));
     decorateBuild(data.current, () => getBuildLog('current'), true);
-
     return data;
   } catch (err) {
     console.error(err);

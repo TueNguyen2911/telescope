@@ -25,6 +25,13 @@ CREATE TABLE IF NOT EXISTS feeds (
   flagged boolean DEFAULT false
 );
 
+-- Build log list
+CREATE TABLE IF NOT EXISTS build_logs (
+  sha text PRIMARY KEY,
+  build_log text NOT NULL, -- actual url to build log stored in storage.
+  success boolean NOT NULL
+);
+
 -- Trigger for auto-updating update_at
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$

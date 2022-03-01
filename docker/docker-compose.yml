@@ -26,6 +26,9 @@ services:
       - SECRET
       - GITHUB_TOKEN
       - JWT_SECRET
+      # Supabase config
+      - SERVICE_ROLE_KEY
+      - SUPABASE_URL
     depends_on:
       - traefik
       - redis
@@ -283,6 +286,7 @@ services:
         - SEARCH_URL=${SEARCH_URL}
         - FEED_DISCOVERY_URL=${FEED_DISCOVERY_URL}
         - STATUS_URL=${STATUS_URL}
+
     container_name: 'nginx'
     environment:
       - TELESCOPE_HOST

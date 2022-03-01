@@ -12,7 +12,7 @@ const getJobCount = require('./js/queue-stats');
 
 // We need to be able to talk to the autodeployment server
 const autodeploymentHost = process.env.WEB_URL || 'localhost';
-
+console.log(process.env);
 /**
  * @returns {Object} Vite manifest https://vitejs.dev/guide/backend-integration.html
  */
@@ -43,7 +43,7 @@ const satelliteOptions = {
           'fonts.googleapis.com',
           'cdn.jsdelivr.net',
         ],
-        connectSrc: ["'self'", '*.fontawesome.com', autodeploymentHost, '*.github.com'],
+        connectSrc: ["'self'", '*.fontawesome.com', autodeploymentHost, '*.github.com', '*'],
         fontSrc: ["'self'", 'data:', 'https:', '*.fontawesome.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
       },

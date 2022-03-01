@@ -99,6 +99,11 @@ CREATE TABLE IF NOT EXISTS storage.migrations (
   id integer PRIMARY KEY,
   name varchar(100) UNIQUE NOT NULL,
   hash varchar(40) NOT NULL, -- sha1 hex encoded hash of the file name and contents, to ensure it hasn't been altered since applying the migration
+  uploaded_at timestamp DEFAULT current_timestamp
+);
+
+CREATE TABLE IF NOT EXISTS storage.build_logs (
+  sha text PRIMARY KEY,
   executed_at timestamp DEFAULT current_timestamp
 );
 
@@ -110,6 +115,7 @@ ALTER USER supabase_storage_admin SET search_path = "storage";
 ALTER table "storage".objects owner to supabase_storage_admin;
 ALTER table "storage".buckets owner to supabase_storage_admin;
 ALTER table "storage".migrations OWNER TO supabase_storage_admin;
+ALTER table "storage".build_logs OWNER TO supabase_storage_admin;
 ALTER function "storage".foldername(text) owner to supabase_storage_admin;
 ALTER function "storage".filename(text) owner to supabase_storage_admin;
 ALTER function "storage".extension(text) owner to supabase_storage_admin;
