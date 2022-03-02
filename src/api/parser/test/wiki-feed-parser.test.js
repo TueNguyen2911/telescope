@@ -1,7 +1,7 @@
 /* global fetch */
 global.fetch = require('node-fetch');
 
-const getWikiFeeds = require('../src/backend/utils/wiki-feed-parser');
+const getWikiFeeds = require('../src/utils/wiki-feed-parser');
 
 const mockFeed = `################# Failing Feeds Commented Out [Start] #################
 
