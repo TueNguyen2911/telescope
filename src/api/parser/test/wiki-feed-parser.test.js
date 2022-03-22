@@ -1,5 +1,4 @@
-/* global fetch */
-global.fetch = require('node-fetch');
+const { fetch } = require('@senecacdot/satellite');
 
 const getWikiFeeds = require('../src/utils/wiki-feed-parser');
 
