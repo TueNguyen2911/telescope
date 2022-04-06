@@ -5,8 +5,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Telescope",
-      "program": "${workspaceFolder}/src/backend/index.js",
-      "envFile": "${workspaceRoot}/.env",
+      "program": "${workspaceFolder}/src/legacy/src/index.js",
+      "envFile": "${workspaceRoot}/src/legacy/.env",
       "skipFiles": ["<node_internals>/**"]
     },
     {

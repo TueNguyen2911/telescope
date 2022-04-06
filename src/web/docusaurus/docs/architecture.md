@@ -27,15 +27,15 @@ The following gives an overview of the current (i.e. 2.4.0) design of Telescope.
 
 ### Legacy Monolithic Back-end (1.0)
 
-Telescope's back-end began as a single, monolithic node.js app. During the 2.0 release, much of the back-end was split into separate microservices (see below). However, parts of the legacy back-end code are still in use, see `src/backend/*`.
+Telescope's back-end began as a single, monolithic node.js app. During the 2.0 release, much of the back-end was split into separate microservices (see below). However, parts of the legacy back-end code are still in use, see `src/legacy/*`.
 
-The current system uses the legacy backend in order to run the feed parser and feed queue, see `src/backend/feed/*`. The processed feeds and posts are then stored in Redis (cache) and Elasticsearch (indexing) databases, and various microservices use these in order to get their data.
+The current system uses the legacy backend in order to run the feed parser and feed queue, see `src/legacy/src/feed/*`. The processed feeds and posts are then stored in Redis (cache) and Elasticsearch (indexing) databases, and various microservices use these in order to get their data.
 
 Telescope's data model is built on Feeds and Posts. A feed represents an RSS/Atom feed, and includes metadata about a particular blog (e.g., URL, author, etc) as well as URLs to individual Posts. A Post includes metadata about a particular blog post (e.g., URL, date created, date updated, etc).
 
 The legacy back-end is started using `pnpm start` in the root of the Telescope monorepo, and it (currently) must be run alongside the microservices. When it runs, the logs show information about feeds being parsed in real-time, which continues forever.
 
-The parser downloads the [CDOT Feed List](https://wiki.cdot.senecacollege.ca/wiki/Planet_CDOT_Feed_List#Feeds), parses it, creates `Feed` objects and puts them into a queue managed by [Bull](https://github.com/OptimalBits/bull) and backed by Redis. These are then processed in `src/backend/feed/processor.js` in order to download the individual Posts, which are also cached in Redis.
+The parser downloads the [CDOT Feed List](https://wiki.cdot.senecacollege.ca/wiki/Planet_CDOT_Feed_List#Feeds), parses it, creates `Feed` objects and puts them into a queue managed by [Bull](https://github.com/OptimalBits/bull) and backed by Redis. These are then processed in `src/legacy/src/feed/processor.js` in order to download the individual Posts, which are also cached in Redis.
 
 There is code duplication between the current back-end and the Parser microservice (see `src/api/parser`), and anyone changing the back-end will also need to update the Parser service at the same time (for now). One of the 3.0 goals is to [remove the back-end and move all of this logic to the Parser service](https://github.com/Seneca-CDOT/telescope/issues?q=is%3Aissue+is%3Aopen+parser+service).
 

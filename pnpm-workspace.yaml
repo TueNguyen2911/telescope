@@ -8,3 +8,5 @@ packages:
   - 'src/satellite'
   # autodeployment
   - 'tools/*'
+  # legacy backend
+  - 'src/legacy/*'
