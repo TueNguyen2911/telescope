@@ -27,4 +27,76 @@ module.exports = {
       url: feed.url,
     }));
   },
+
+  // Invalid feed related functions
+  async setInvalidFeed(id, reason) {
+    const { error } = await supabase.from('feeds').update({ invalid: true }).eq('id', id);
+
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, `can't invalidate feed ${id} in supabase`);
+    }
+  },
+
+  async getInvalidFeeds() {
+    const { data: invalidFeeds, error } = await supabase.from('feeds').select().eq('invalid', true);
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, "can't fetch invalid feeds in supabase");
+    }
+    return invalidFeeds;
+  },
+  async isInvalid(id) {
+    const { data: invalidFeed, error } = await supabase
+      .from('feeds')
+      .select('invalid')
+      .eq('id', id)
+      .limit(1);
+
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, `can't fetch feed ${id} from supabase`);
+    }
+    return invalidFeed.invalid;
+  },
+
+  // Flagged feed related functions
+  async setFlaggedFeed(id) {
+    const { error } = await supabase.from('feeds').update({ flagged: true }).eq('id', id);
+
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, `can't flag feed ${id} in supabase`);
+    }
+  },
+  async unsetFlaggedFeed(id) {
+    const { error } = await supabase.from('feeds').update({ flagged: false }).eq('id', id);
+
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, `can't unflag feed ${id} in supabase`);
+    }
+  },
+  async getFlaggedFeeds() {
+    const { data: flaggedFeeds, error } = await supabase.from('feeds').select().eq('flagged', true);
+
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, `can't flagged feeds from supabase`);
+    }
+    return flaggedFeeds.map((feed) => feed.id);
+  },
+  async isFlagged(id) {
+    const { data: flaggedFeed, error } = await supabase
+      .from('feeds')
+      .select('flagged')
+      .eq('id', id)
+      .limit(1);
+
+    if (error) {
+      logger.error({ error });
+      throw Error(error.message, `can't fetch feed ${id} from supabase`);
+    }
+    return flaggedFeed.flagged;
+  },
 };

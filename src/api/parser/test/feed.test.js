@@ -7,6 +7,9 @@ const { search } = require('../src/utils/indexer');
 
 const urlToId = (url) => hash(normalizeUrl(url));
 
+jest.mock('../src/utils/supabase');
+const { __setMockFeeds } = require('../src/utils/supabase');
+
 describe('Post data class tests', () => {
   const data = {
     author: 'Post Author',
@@ -262,32 +265,26 @@ describe('Post data class tests', () => {
       // Teardown removing the added feed
       await Promise.all([await feed.delete(), await feed2.delete(), await feed3.delete()]);
     });
-
-    test('Flagged feed should appear in t:feeds:flagged and not t:feeds', async () => {
+  });
+  describe('Set and get flagged feeds objects from Supabase', () => {
+    test('Flagged feed should be set and retrieved correctly', async () => {
       const feedData = new Feed(data.author, data.url, data.user, data.link);
       const feedData2 = new Feed(data2.author, data2.url, data2.user, data2.link);
       const feedData3 = new Feed(data3.author, data3.url, data3.user, data3.link);
+      __setMockFeeds([feedData, feedData2, feedData3]);
 
       // Check all three feeds are created
       const feed = await Feed.byId(await Feed.create(feedData));
       const feed2 = await Feed.byId(await Feed.create(feedData2));
       const feed3 = await Feed.byId(await Feed.create(feedData3));
 
-      let unFlaggedFeeds = await Feed.all();
+      const unFlaggedFeeds = await Feed.all();
       expect(unFlaggedFeeds.length).toBe(3);
 
       // Test flag()
       await Promise.all([feed.flag(), feed2.flag()]);
-      unFlaggedFeeds = await Feed.all();
-      expect(unFlaggedFeeds.length).toBe(1);
-
       let flaggedFeeds = await Feed.flagged();
       expect(flaggedFeeds.length).toBe(2);
-
-      // Feed should not appear in unflagged set if Feed is flagged and added again
-      await Feed.create(feedData);
-      unFlaggedFeeds = await Feed.all();
-      expect(unFlaggedFeeds.length).toBe(1);
 
       // Flagged feeds should have same data as feed + feed2
       expect(flaggedFeeds.some((flaggedFeed) => flaggedFeed.id === feed.id)).toBe(true);
@@ -295,21 +292,15 @@ describe('Post data class tests', () => {
 
       // Test unflag();
       await feed2.unflag();
-      unFlaggedFeeds = await Feed.all();
-      expect(unFlaggedFeeds.length).toBe(2);
-
       flaggedFeeds = await Feed.flagged();
       expect(flaggedFeeds.length).toBe(1);
 
-      // Testing delete() as part of teardown, feed should be removed from t:feeds:flagged
-      await feed.delete();
+      await feed.unflag();
       flaggedFeeds = await Feed.flagged();
       expect(flaggedFeeds.length).toBe(0);
-      await feed2.delete();
-      await feed3.delete();
 
-      // Testing whether removing an already removed feed will error
-      await feed.delete();
+      // Testing delete() as part of teardown, feed should be removed from t:feeds:flagged
+      await Promise.all([await feed.delete(), await feed2.delete(), await feed3.delete()]);
     });
   });
 });

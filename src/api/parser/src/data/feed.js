@@ -6,17 +6,21 @@ const {
   getFeeds,
   addFeed,
   removeFeed,
-  setInvalidFeed,
-  isInvalid,
   setDelayedFeed,
   isDelayed,
   removePost,
   getPost,
   getPosts,
+} = require('../utils/storage');
+
+const {
+  isInvalid,
+  setInvalidFeed,
   getFlaggedFeeds,
   setFlaggedFeed,
   unsetFlaggedFeed,
-} = require('../utils/storage');
+} = require('../utils/supabase');
+
 const { deletePost } = require('../utils/indexer');
 
 const urlToId = (url) => hash(normalizeUrl(url));
