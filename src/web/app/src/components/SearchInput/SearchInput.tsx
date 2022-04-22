@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { IconButton, TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AuthorInput from './AuthorInput';
 
@@ -19,13 +20,23 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create(['background-color', 'border-color'], {
         duration: '.5s',
       }),
-      fontSize: '1.2rem',
+      fontSize: '1.4rem',
       display: 'block',
       color: theme.palette.text.primary,
+      '&:hover fieldset': {
+        borderColor: `${theme.palette.info.main} !important`,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: `${theme.palette.info.main} !important`,
+      },
+    },
+    label: {
+      color: `${theme.palette.text.secondary} !important`,
+      fontSize: '1.4rem',
     },
     customInputText: {
       color: theme.palette.text.primary,
-      fontSize: '14px',
+      fontSize: '1.4rem',
     },
     iconButton: {
       backgroundColor: theme.palette.info.main,
@@ -38,14 +49,15 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       margin: 0,
       position: 'absolute',
-      top: '20px',
-      padding: '13px',
+      top: '50%',
+      right: '0.4rem',
+      transform: 'translateY(-50%)',
       color: '#A0D1FA',
-      marginRight: '0.5rem',
     },
     wrapper: {
       display: 'flex',
       flexDirection: 'row-reverse',
+      position: 'relative',
     },
   })
 );
@@ -55,10 +67,9 @@ interface SearchInputInterface {
   setText: Dispatch<SetStateAction<string>>;
   labelFor: string;
   clickEvent?: any;
-  onEnterKey?: any;
 }
 
-const SearchInput = ({ text, setText, labelFor, clickEvent, onEnterKey }: SearchInputInterface) => {
+const SearchInput = ({ text, setText, labelFor, clickEvent }: SearchInputInterface) => {
   const classes = useStyles();
 
   return (
@@ -82,12 +93,9 @@ const SearchInput = ({ text, setText, labelFor, clickEvent, onEnterKey }: Search
           }}
           InputLabelProps={{
             classes: {
-              root: classes.customInputText,
-              focused: classes.customInputText,
+              root: classes.label,
+              focused: classes.label,
             },
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') onEnterKey();
           }}
         />
       )}

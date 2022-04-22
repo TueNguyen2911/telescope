@@ -2,7 +2,15 @@
 sidebar_position: 0
 ---
 
+import StarField from '@site/src/components/StarField';
+
 # Telescope Overview
+
+## Our Contributors
+
+The result of Telescope is thanks to the combined work of all these talented people (and robots).
+
+<StarField />
 
 ## Introduction
 
@@ -63,6 +71,12 @@ We've also watched as social media and modern technologies have reshaped our
 expectations for what a system like this can and should be. This has gone into our design and implementation of our new Telescope project.
 
 See [Architecture](architecture.md) for a more complete picture of our current design.
+
+## What does Telescope do?
+
+In essence, Telescope takes [RSS](https://en.wikipedia.org/wiki/RSS) [blog post feeds](https://rss.com/blog/rss-feed-for-blog/), rebuilds those blog posts into HTML and collects them in a single web page to display. It is able to handle various formatting, such as code blocks or embedded videos. Telescope also collects data about those posts in the [dashboard](https://api.telescope.cdot.systems/v1/status/) . Blog posts on
+Telescope come from contributors to Telescope. Therefore, you get to follow the
+website&quot;s development on the website itself!
 
 ## Project History
 

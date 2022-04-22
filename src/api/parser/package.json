@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "env-cmd -f env.local node src/index.js",
     "start": "node src/index.js",
-    "eslint": "TIMING=1 eslint --config .eslintrc.js \"./**/*.js\"",
+    "eslint": "eslint --config .eslintrc.js \"./**/*.js\"",
+    "eslint-time": "TIMING=1 eslint --config .eslintrc.js \"./**/*.js\"",
     "eslint-fix": "eslint --config .eslintrc.js \"./**/*.js\" --fix",
     "lint": "pnpm eslint",
+    "lint-time": "pnpm eslint-time",
     "test": "jest -c jest.config.js"
   },
   "repository": "Seneca-CDOT/telescope",
@@ -18,8 +20,8 @@
   },
   "homepage": "https://github.com/Seneca-CDOT/telescope#readme",
   "dependencies": {
-    "@bull-board/api": "3.10.3",
-    "@bull-board/express": "3.10.3",
+    "@bull-board/api": "3.10.4",
+    "@bull-board/express": "3.10.4",
     "@senecacdot/satellite": "^1.27.0",
     "@supabase/supabase-js": "1.29.4",
     "bull": "3.29.3",
